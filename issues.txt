@@ -1,0 +1,41 @@
+In Express.js, middleware can add additional properties and methods to the res object to extend its functionality. Here are a few examples:
+
+Cookie Handling: Middleware like cookie-parser can augment the res object with methods like res.cookie(name, value, options), which allows you to set cookies in the response, and res.clearCookie(name, options), which allows you to clear a specific cookie.
+
+Session Handling: Middleware like express-session can add a res.session property, which is an object that can contain any data you want to persist between requests from the same client.
+
+View Rendering: Middleware like ejs, pug, or other view engines can add a res.render(view, locals, callback) method, which allows you to render a view template with specific local variables and send it as the HTTP response.
+
+Response Time Tracking: Custom middleware can add properties like res.startTime to track when the response was started, for use in logging or performance monitoring.
+
+Security Headers: Middleware like helmet helps secure Express apps by setting various HTTP headers, affecting the res object indirectly.
+
+Caching: Middleware like apicache or express-redis-cache can add methods to control caching of the response.
+
+Remember that any changes you make to the res object in middleware are available to subsequent middleware, routes, and error handlers. This allows middleware to communicate and share data with each other. However, you should be careful not to unintentionally overwrite existing properties or methods, or to add so much data to the object that it becomes difficult to manage.
+
+Yes, just like the res object, the req (request) object in Express.js can also be augmented with additional properties and methods to extend its functionality. Middleware is often used to add these extensions. Here are a few examples:
+
+Body Parsing: Middleware like body-parser can parse incoming request bodies and populate the req.body property, which can then be used to access the data in the request body.
+
+Cookie Handling: Middleware like cookie-parser can populate the req.cookies property, which can then be used to access the cookies sent in the request.
+
+Session Handling: Middleware like express-session can add a req.session property, which is an object that can contain any data you want to persist between requests from the same client.
+
+Authentication and Authorization: Middleware like passport can add methods like req.login(user, callback), req.logout(), and properties like req.user and req.isAuthenticated() to manage user authentication and authorization.
+
+File Uploads: Middleware like multer can handle multipart/form-data (used for file uploads), and add properties like req.file (for single file upload) or req.files (for multiple files).
+
+Rate Limiting: Middleware like express-rate-limit can add a req.rateLimit property, which contains information about the current state of rate limiting for that request.
+
+Remember, any properties or methods that you add to the req object in middleware are available to subsequent middleware, routes, and error handlers. This allows middleware to communicate and share data with each other. As with the res object, care should be taken not to unintentionally overwrite existing properties or methods.
+
+----------------------------------------
+
+what if I don't use 'Bearer'? What's the result?
+
+The Bearer keyword is part of a convention used with OAuth 2.0 and JWT tokens. If you don't use Bearer in the Authorization header, the server-side code that's expecting it may not recognize the token and could reject the request.
+
+When the server code sees the Bearer keyword, it knows that the string following it is a token to be handled in a certain way. If you remove the Bearer keyword, the server may not know what to do with the string in the Authorization header. It might treat it as an error, or simply ignore it and proceed as if no authorization was provided.
+
+However, if you control both the client and server code, you could choose to use a different keyword, or no keyword at all, as long as both client and server are designed to handle this correctly. In other words, the Bearer keyword is not intrinsically necessary for tokens to work, but it is a widely followed convention that helps make code more understandable and interoperable.
