@@ -39,3 +39,28 @@ The Bearer keyword is part of a convention used with OAuth 2.0 and JWT tokens. I
 When the server code sees the Bearer keyword, it knows that the string following it is a token to be handled in a certain way. If you remove the Bearer keyword, the server may not know what to do with the string in the Authorization header. It might treat it as an error, or simply ignore it and proceed as if no authorization was provided.
 
 However, if you control both the client and server code, you could choose to use a different keyword, or no keyword at all, as long as both client and server are designed to handle this correctly. In other words, the Bearer keyword is not intrinsically necessary for tokens to work, but it is a widely followed convention that helps make code more understandable and interoperable.
+
+-----------------------------------------------
+---------------------------------------------------
+
+why do we use app.use(errorHandler) at the end of the server.ts file even though we do error handling, like, try catch block in every controller function?
+
+Great question! While it's true that many Express.js applications handle errors within the individual route handlers using try-catch blocks, there are still cases where an error might slip through.
+
+For example, you might have some middleware functions that aren't inside a try-catch block, or an error might occur in some asynchronous code that isn't properly caught. In these situations, if an error gets all the way to the end of the middleware stack without being handled, it could cause the server to crash, which is a situation you generally want to avoid.
+
+This is where the error handling middleware comes in. By placing app.use(errorHandler) at the end of your middleware stack, you're saying "if an error gets this far without being handled, pass it to this error handler". This middleware is a sort of "last line of defense" that catches any errors that slip through your other error handling.
+
+The error handling middleware usually logs the error, sends a generic error response to the client, and sometimes does other cleanup tasks. This ensures that even if an error isn't caught earlier in your application, it still gets handled in some way, and the server keeps running.
+
+Here's an example of an error handling middleware in Express.js:
+
+typescript
+Copy code
+app.use((err: Error, req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+In this middleware, err is any error that was thrown somewhere in your application and not caught. The middleware logs the error stack to the console and sends a response with a status code of 500 and a message of "Something broke!".
+
+Note: This middleware function takes four arguments. The fact that it takes four arguments is how Express.js knows it's an error handling middleware, as opposed to a regular middleware. Regular middleware functions only take three arguments: req, res, and next.
